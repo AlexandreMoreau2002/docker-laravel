@@ -1,0 +1,9 @@
+services:
+  laravel:
+    build: .
+    volumes:
+      - ./:/app
+    ports:
+      - "8000:8000"
+    working_dir: /app
+    tty: true
