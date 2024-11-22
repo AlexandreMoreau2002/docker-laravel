@@ -1,10 +1,15 @@
 services:
   laravel:
-    build: .
+    build:
+      context: .
+      args:
+        UID: 1000 # Remplacez par votre UID réel
+        GID: 1000 # Remplacez par votre GID réel
     volumes:
       - ./:/app
     ports:
-      - '8000:8000'
+      - '8002:8000'
+      - '5173:5173' # Port hôte 5173, conteneur 5173 (ajouté)
     working_dir: /app
     tty: true
 
@@ -18,7 +23,7 @@ services:
       MYSQL_USER: laravel
       MYSQL_PASSWORD: laravel
     ports:
-      - '3306:3306'
+      - '3308:3306'
     volumes:
       - dbdata:/var/lib/mysql
 
@@ -26,7 +31,7 @@ services:
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
-      - '8080:80'
+      - '8081:80'
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: root
