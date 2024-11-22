@@ -183,6 +183,42 @@ Après avoir apporté toutes les modifications, vous devez reconstruire l'image 
 
 ---
 
+Voici un exemple d'un bloc que vous pouvez inclure dans votre fichier README pour documenter cette procédure :
+
+---
+
+## Supprimer le dossier laravel si besoin
+
+Si vous rencontrez des problèmes pour supprimer un dossier dans WSL en raison de permissions insuffisantes, suivez ces étapes :
+
+### Étapes à suivre
+
+1. **Ouvrir un terminal Ubuntu dans le dossier parent**
+   Assurez-vous de naviguer jusqu'au dossier parent contenant le dossier à supprimer.
+
+2. **Supprimer les attributs spéciaux des fichiers**
+   Certains fichiers peuvent être protégés par un attribut immuable qui empêche leur modification ou suppression. Pour retirer cet attribut, exécutez la commande suivante :
+
+   ```bash
+   sudo chattr -R -i project/
+   ```
+
+   Cela supprimera l'attribut **immuable** sur tous les fichiers et sous-dossiers du répertoire spécifié.
+
+3. **Modifier les permissions et supprimer le dossier**
+   Une fois les attributs supprimés, modifiez les permissions du dossier et supprimez-le en exécutant :
+
+   ```bash
+   sudo chmod -R 777 nouveau/
+   sudo rm -rf nouveau/
+   ```
+
+   Ces commandes garantissent que le dossier est supprimé avec tous ses fichiers.
+
+---
+
+Ce format est clair, concis et adapté pour un README. Vous pouvez ajuster les noms des dossiers ou ajouter des informations supplémentaires selon vos besoins spécifiques.
+
 ## Remarques
 
 - Assurez-vous que les ports spécifiés (`8000`, `8002`, `8081`, `5173`) ne sont pas utilisés par d'autres applications sur votre machine.
