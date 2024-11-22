@@ -67,6 +67,14 @@
    laravel new nomDuProjet
    ```
 
+   ensuite :
+
+   ```bash
+   cd example-app
+   npm install && npm run build
+   composer run dev
+   ```
+
 9. **Configurer le fichier `.env` de Laravel**
 
    Ouvrez le fichier `.env` de votre projet Laravel (`/app/nom-du-projet/.env`) et modifiez les lignes suivantes :
@@ -83,7 +91,7 @@
    DB_PASSWORD=laravel
    ```
 
-## Modifier le script `dev` pour Laravel
+## Modifier le fichier `composer.json` pour Laravel
 
 La commande `php artisan serve` lance le serveur sur `127.0.0.1` par défaut, ce qui empêche l'accès depuis d'autres interfaces.
 
