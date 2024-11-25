@@ -204,10 +204,6 @@ Après avoir apporté toutes les modifications, vous devez reconstruire l'image 
 
 ---
 
-Voici un exemple d'un bloc que vous pouvez inclure dans votre fichier README pour documenter cette procédure :
-
----
-
 ## Supprimer le dossier laravel si besoin
 
 Si vous rencontrez des problèmes pour supprimer un dossier dans WSL en raison de permissions insuffisantes, suivez ces étapes :
@@ -237,8 +233,6 @@ Si vous rencontrez des problèmes pour supprimer un dossier dans WSL en raison d
    Ces commandes garantissent que le dossier est supprimé avec tous ses fichiers.
 
 ---
-
-Ce format est clair, concis et adapté pour un README. Vous pouvez ajuster les noms des dossiers ou ajouter des informations supplémentaires selon vos besoins spécifiques.
 
 ## Remarques
 
