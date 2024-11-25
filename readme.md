@@ -1,11 +1,32 @@
-# Projet Docker pour Laravel dans la WSL windows 10
+# Projet Docker pour Laravel
 
 ## Liens pour le développement
 
 - **phpMyAdmin** : [http://localhost:8081/](http://localhost:8081/)
 - **Application Laravel** : [http://localhost:8002/](http://localhost:8002/)
 
-## Installation
+## Lancement du projet
+
+### Démarrer le container
+
+   ```bash
+   docker compose start
+   ```
+
+### Rentrer dedans pour lancer les commandes laravel
+
+   ```bash
+   docker compose exec laravel bash
+   ```
+
+### Arreter le container
+   
+   ```bash
+   docker compose stop
+   ```
+   
+
+## Installation du projet
 
 ### Prérequis
 
@@ -39,6 +60,14 @@
    docker compose build
    ```
 
+   **Explication :**
+
+   La commande `docker compose build` reconstruit les images Docker définies dans le fichier `docker-compose.yml`. Elle lit les instructions des fichiers Dockerfile (ou des options spécifiées dans le compose) pour créer ou mettre à jour les images nécessaires, afin qu'elles soient prêtes à être utilisées avec `docker compose up`.
+
+   **En résumé :**
+
+   **Elle construit les images à jour pour votre application.**
+
 6. **Créer et lancer les conteneurs**
 
    ```bash
@@ -56,81 +85,97 @@
    Une fois dans le conteneur, exécutez la commande suivante pour créer un nouveau projet Laravel :
 
    ```bash
-   laravel new project
+   laravel new nomDuProjet
    ```
 
-9. **Lancer le projet Laravel**
+   ensuite :
 
    ```bash
-   cd project/
+   cd example-app
    npm install && npm run build
    composer run dev
    ```
 
-10. **Configurer le fichier `.env` de Laravel**
+9. **Configurer le fichier `.env` de Laravel**
 
-Ouvrez le fichier `.env` de votre projet Laravel (`/app/project/.env`) et modifiez les lignes suivantes :
+   Ouvrez le fichier `.env` de votre projet Laravel (`/app/nom-du-projet/.env`) et modifiez les lignes suivantes :
 
-```env
-APP_URL=http://localhost:8002
-VITE_DEV_SERVER_URL=http://localhost:5173
+   ```env
+   APP_URL=http://localhost:8002
+   VITE_DEV_SERVER_URL=http://localhost:5173
 
-DB_CONNECTION=mysql
-DB_HOST=db
-DB_PORT=3306
-DB_DATABASE=laravel
-DB_USERNAME=laravel
-DB_PASSWORD=laravel
-```
+   DB_CONNECTION=mysql
+   DB_HOST=db
+   DB_PORT=3306
+   DB_DATABASE=laravel
+   DB_USERNAME=laravel
+   DB_PASSWORD=laravel
+   ```
 
-11. **Modifier le fichier `composer.json` pour Laravel**
+## Modifier le fichier `composer.json` pour Laravel
+
+La commande `php artisan serve` lance le serveur sur `127.0.0.1` par défaut, ce qui empêche l'accès depuis d'autres interfaces.
+
+### Solution
 
 Modifiez le script `dev` dans votre fichier `composer.json` pour qu'il écoute sur `0.0.0.0` :
 
 ```json
 "dev": [
-   "Composer\\Config::disableProcessTimeout",
-   "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve --host=0.0.0.0 --port=8000\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+    "Composer\\Config::disableProcessTimeout",
+    "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve --host=0.0.0.0 --port=8000\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
 ]
 ```
 
-12. **Modifier `package.json`**
+---
 
-Ajoutez l'option `--host` au script `dev` :
+## Configurer Vite pour être accessible
 
-```json
-"scripts": {
-  "dev": "vite --host"
-}
-```
+Modifiez la configuration de Vite pour qu'il écoute sur `0.0.0.0`.
 
-13. **Modifier `vite.config.js`**
+1. **Modifier `package.json`**
 
-Configurez le serveur pour écouter sur `0.0.0.0` :
+   Ajoutez l'option `--host` au script `dev` :
 
-```javascript
-// vite.config.js
-import { defineConfig } from 'vite'
-import laravel from 'laravel-vite-plugin'
+   ```json
+   "scripts": {
+     "dev": "vite --host"
+   }
+   ```
 
-export default defineConfig({
-  plugins: [
-    laravel({
-      input: ['resources/css/app.css', 'resources/js/app.js'],
-      refresh: true,
-    }),
-  ],
-  server: {
-    host: '0.0.0.0', // Écoute sur toutes les interfaces
-    port: 5173, // Assurez-vous que c'est le même port que dans docker-compose.yml
-    strictPort: true, // Force Vite à utiliser le port spécifié
-    hmr: {
-      host: 'localhost', // Nécessaire pour le rechargement à chaud
-      port: 5173,
-    },
-  },
-})
-```
+2. **Modifier `vite.config.js`**
+
+   Configurez le serveur pour écouter sur `0.0.0.0` :
+
+   ```javascript
+   // vite.config.js
+   import { defineConfig } from 'vite'
+   import laravel from 'laravel-vite-plugin'
+
+   export default defineConfig({
+     plugins: [
+       laravel({
+         input: ['resources/css/app.css', 'resources/js/app.js'],
+         refresh: true,
+       }),
+     ],
+     server: {
+       host: '0.0.0.0', // Écoute sur toutes les interfaces
+       port: 5173, // Assurez-vous que c'est le même port que dans docker-compose.yml
+       strictPort: true, // Force Vite à utiliser le port spécifié
+       hmr: {
+         host: 'localhost', // Nécessaire pour le rechargement à chaud
+         port: 5173,
+       },
+     },
+   })
+   ```
+
+---
+
+## Reconstruire et relancer les conteneurs Docker
+
+Après avoir apporté toutes les modifications, vous devez reconstruire l'image Docker et relancer les conteneurs pour appliquer les changements.
 
 1. **Arrêter les conteneurs en cours d'exécution**
 
@@ -138,10 +183,10 @@ export default defineConfig({
    docker compose down
    ```
 
-2. **Reconstruire l'image docker**
+2. **Reconstruire l'image Laravel**
 
    ```bash
-   docker compose build
+   docker compose build laravel
    ```
 
 3. **Relancer les conteneurs en arrière-plan**
@@ -152,28 +197,14 @@ export default defineConfig({
 
 ---
 
-## Lancer le projet
+## Accéder à l'application
 
-1. **Ouvrir le repo dans un terminal ubuntu**
+- **Application Laravel** : [http://localhost:8002/](http://localhost:8002/)
+- **phpMyAdmin** : [http://localhost:8081/](http://localhost:8081/)
 
-2. **Lancer les conteneurs**
+---
 
-   ```bash
-   docker compose up -d
-   ```
-
-3. **Accéder au conteneur Laravel**
-
-   ```bash
-   docker compose exec laravel bash
-   ```
-
-4. **Lancer le projet Laravel**
-
-   ```bash
-   cd project/
-   composer run dev
-   ```
+Voici un exemple d'un bloc que vous pouvez inclure dans votre fichier README pour documenter cette procédure :
 
 ---
 
@@ -199,13 +230,15 @@ Si vous rencontrez des problèmes pour supprimer un dossier dans WSL en raison d
    Une fois les attributs supprimés, modifiez les permissions du dossier et supprimez-le en exécutant :
 
    ```bash
-   sudo chmod -R 777 project/
-   sudo rm -rf project/
+   sudo chmod -R 777 nouveau/
+   sudo rm -rf nouveau/
    ```
 
    Ces commandes garantissent que le dossier est supprimé avec tous ses fichiers.
 
 ---
+
+Ce format est clair, concis et adapté pour un README. Vous pouvez ajuster les noms des dossiers ou ajouter des informations supplémentaires selon vos besoins spécifiques.
 
 ## Remarques
 
